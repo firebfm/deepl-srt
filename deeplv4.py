@@ -58,6 +58,48 @@ def combine_srt(mysrt, wordtxt, finalsrt):
 			resfile.write("\n")
 			count += 1
 
+def paste_it(chunk):
+	# Get the input_area
+	input_css = 'div.lmt__inner_textarea_container textarea'
+	input_area = driver.find_element_by_css_selector(input_css)
+	pyperclip.copy(chunk)
+	input_area.clear()
+	input_area.send_keys(Keys.CONTROL+ "v")
+	# For MacOS
+	#input_area.send_keys(Keys.SHIFT, Keys.INSERT
+
+	# wait for translation
+	time.sleep(14)
+
+	# Getting button location on  the html tree
+	button_css = ' div.lmt__target_toolbar__copy button' 
+
+	# Getting the button object
+	button = driver.find_element_by_css_selector(button_css)
+
+	# Extracting its position
+	y = button.location['y']
+
+	# Positionning the button into the screen
+	driver.execute_script("window.scrollTo(0, {})".format(y - 150))
+
+	time.sleep(2)
+
+	# Getting the button object
+	# (again - its position has been actualized and we need to get the new positions for the click)
+	button = driver.find_element_by_css_selector(button_css)
+
+	# Making the click => translation is now in our pyperclip
+	button.click()
+
+	time.sleep(2)
+
+	# Assign to content = pyperclip contents
+	content = pyperclip.paste()
+	input_area.clear()
+
+	return content
+
 # Start a Selenium driver
 driver_path=r'C:\Program Files (x86)\chromedriver.exe'
 driver = webdriver.Chrome(driver_path)
@@ -89,45 +131,10 @@ for srt in listsrt:
 	print(f'Working on {os.path.basename(srt)}')
 	if len(all_text) < 5000:
 		print('the whole text can be pasted')
-		# Get the input_area
-		input_css = 'div.lmt__inner_textarea_container textarea'
-		input_area = driver.find_element_by_css_selector(input_css)
-		pyperclip.copy(all_text)
-		input_area.clear()
-		input_area.send_keys(Keys.CONTROL+ "v")
-		# wait for translation
-		time.sleep(14)
-
-		# Getting button location on  the html tree
-		button_css = ' div.lmt__target_toolbar__copy button' 
-
-		# Getting the button object
-		button = driver.find_element_by_css_selector(button_css)
-
-		# Extracting its position
-		y = button.location['y']
-
-		# Positionning the button into the screen
-		driver.execute_script("window.scrollTo(0, {})".format(y - 150))
-
-		time.sleep(2)
-
-		# Getting the button object
-		# (again - its position has been actualized and we need to get the new positions for the click)
-		button = driver.find_element_by_css_selector(button_css)
-
-		# Making the click => translation is now in our pyperclip
-		button.click()
-		button.click()
-
-		time.sleep(2)
-
-		# Assign to content = pyperclip contents
-		content = pyperclip.paste()
+		content = paste_it(all_text)
 		#content = re.sub(r'\nTranslated with www\.DeepL\.com/Translator \(free version\)', '', content, 0, re.M)
 		finaltext += content
 		pyperclip.copy('')
-		input_area.clear()
 	else:
 		# list of lines
 		with open(txtpath, 'r', encoding='utf-8') as f:
@@ -156,57 +163,10 @@ for srt in listsrt:
 
 
 		for chunk in chunks:
-			# Get the input_area
-			input_css = 'div.lmt__inner_textarea_container textarea'
-			input_area = driver.find_element_by_css_selector(input_css)
-
 			chunk = ''.join(chunk)
-			#print(chunk)
-			# Set the sentence into the pyperclip
-			pyperclip.copy(chunk)
-
-			# Making sure that there is no previous text
-			input_area.clear()
-
-			# Pasting the copied sentence into the input_area
-			input_area.send_keys(Keys.CONTROL+ "v")
-
-			# For MacOS
-			#input_area.send_keys(Keys.SHIFT, Keys.INSERT)
-
-			# Wait for translation to appear on the web page
-			time.sleep(14)
-
-			# Getting button location on  the html tree
-			button_css = ' div.lmt__target_toolbar__copy button' 
-
-			# Getting the button object
-			button = driver.find_element_by_css_selector(button_css)
-
-			# Extracting its position
-			y = button.location['y']
-
-			# Positionning the button into the screen
-			driver.execute_script("window.scrollTo(0, {})".format(y - 150))
-
-			time.sleep(2)
-
-			# Getting the button object
-			# (again - its position has been actualized and we need to get the new positions for the click)
-			button = driver.find_element_by_css_selector(button_css)
-
-			# Making the click => translation is now in our pyperclip
-			button.click()
-			button.click()
-
-			time.sleep(2)
-
-			# Assign to content = pyperclip contents
-			content = pyperclip.paste()
+			content = paste_it(chunk)
 			#content = re.sub(r'\nTranslated with www\.DeepL\.com/Translator \(free version\)', '', content, 0, re.M)
 			finaltext += content
-
-			input_area.clear()
 
 			#content = content.replace("\n\n", "\n")
 			# testing, debugging, checking chunk files for errors
@@ -231,6 +191,7 @@ for srt in listsrt:
 			counter += 1
 			content = ""
 			pyperclip.copy('')
+
 	#finaltext = finaltext.replace("\n\n", "\n")
 	completeName = os.path.splitext(srt)[0] + '.en.txt'
 	finaltext = finaltext.replace("\nTranslated with www.DeepL.com/Translator (free version)", "")
