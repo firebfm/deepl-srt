@@ -228,6 +228,7 @@ for srt in listsrt:
 			print(f'{content}')
 			'''
 			print(f'chunk {counter} is done')
+			counter += 1
 			content = ""
 			clipboard.copy('')
 	#finaltext = finaltext.replace("\n\n", "\n")
@@ -248,8 +249,8 @@ for srt in listsrt:
 	combine_srt(srt, completeName, finalsrt)
 
 	# delete text files
-	os.remove(completeName)
-	os.remove(txtpath)
+	#os.remove(completeName)
+	#os.remove(txtpath)
 
 	print(f'{os.path.basename(finalsrt)} IS COMPLETED')
 driver.quit()
