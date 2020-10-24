@@ -135,7 +135,7 @@ for srt in listsrt:
 
 		
 		for line in lines:
-			if line != '\n' and line != lines[-1]:
+			if line != '\n' and line is not lines[-1]:
 				sentence += line
 			else:
 				sentence += line
@@ -143,9 +143,9 @@ for srt in listsrt:
 				sentence = ""
 
 		for sentence in list_sentence:
-			if len(chunk) <= 4950 and sentence != list_sentence[-1]:
+			if len(chunk) <= 4950 and sentence is not list_sentence[-1]:
 				chunk += sentence
-			elif sentence == list_sentence[-1]:
+			elif sentence is list_sentence[-1]:
 				chunk += sentence
 				chunks.append(chunk)
 				chunk = ""
