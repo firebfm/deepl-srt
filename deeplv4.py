@@ -41,9 +41,10 @@ def combine_srt(mysrt, wordtxt, finalsrt):
 		for line in lines:
 			if line != '\n' and line is not lines[-1]:
 				liner += line
-			elif line is lines[-1]:
+			elif line != '\n' and len(linerList) == len(match)-1:
 				liner += line
 				linerList.append(liner)
+				break
 			else:
 				linerList.append(liner)
 				liner = ""
@@ -76,7 +77,6 @@ for srt in listsrt:
 	# count length of chracters
 	with open(txtpath, 'r', encoding='utf-8') as f:
 		all_text = f.read()	
-	numC = len(all_text)
 
 	sentence = ""
 	list_sentence = []
@@ -87,7 +87,7 @@ for srt in listsrt:
 	counter = 1
 
 	print(f'Working on {os.path.basename(srt)}')
-	if numC < 5000:
+	if len(all_text) < 5000:
 		print('the whole text can be pasted')
 		# Get the input_area
 		input_css = 'div.lmt__inner_textarea_container textarea'
