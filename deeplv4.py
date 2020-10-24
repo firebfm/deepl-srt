@@ -7,7 +7,7 @@ from selenium.common.exceptions import NoSuchElementException
 import time
 import os
 import re
-import clipboard
+import pyperclip
 
 # Coded by firechip/firebfm
 # Automatic translation from Chinese srt to English srt in Deepl
@@ -92,11 +92,11 @@ for srt in listsrt:
 		# Get the input_area
 		input_css = 'div.lmt__inner_textarea_container textarea'
 		input_area = driver.find_element_by_css_selector(input_css)
-		clipboard.copy(all_text)
+		pyperclip.copy(all_text)
 		input_area.clear()
 		input_area.send_keys(Keys.CONTROL+ "v")
 		# wait for translation
-		time.sleep(10)
+		time.sleep(14)
 
 		# Getting button location on  the html tree
 		button_css = ' div.lmt__target_toolbar__copy button' 
@@ -116,17 +116,17 @@ for srt in listsrt:
 		# (again - its position has been actualized and we need to get the new positions for the click)
 		button = driver.find_element_by_css_selector(button_css)
 
-		# Making the click => translation is now in our clipboard
+		# Making the click => translation is now in our pyperclip
 		button.click()
 		button.click()
 
 		time.sleep(2)
 
-		# Assign to content = clipboard contents
-		content = clipboard.paste()
+		# Assign to content = pyperclip contents
+		content = pyperclip.paste()
 		#content = re.sub(r'\nTranslated with www\.DeepL\.com/Translator \(free version\)', '', content, 0, re.M)
 		finaltext += content
-		clipboard.copy('')
+		pyperclip.copy('')
 		driver.refresh()
 	else:
 		# list of lines
@@ -162,8 +162,8 @@ for srt in listsrt:
 
 			chunk = ''.join(chunk)
 			#print(chunk)
-			# Set the sentence into the clipboard
-			clipboard.copy(chunk)
+			# Set the sentence into the pyperclip
+			pyperclip.copy(chunk)
 
 			# Making sure that there is no previous text
 			input_area.clear()
@@ -175,7 +175,7 @@ for srt in listsrt:
 			#input_area.send_keys(Keys.SHIFT, Keys.INSERT)
 
 			# Wait for translation to appear on the web page
-			time.sleep(10)
+			time.sleep(14)
 
 			# Getting button location on  the html tree
 			button_css = ' div.lmt__target_toolbar__copy button' 
@@ -195,14 +195,14 @@ for srt in listsrt:
 			# (again - its position has been actualized and we need to get the new positions for the click)
 			button = driver.find_element_by_css_selector(button_css)
 
-			# Making the click => translation is now in our clipboard
+			# Making the click => translation is now in our pyperclip
 			button.click()
 			button.click()
 
 			time.sleep(2)
 
-			# Assign to content = clipboard contents
-			content = clipboard.paste()
+			# Assign to content = pyperclip contents
+			content = pyperclip.paste()
 			#content = re.sub(r'\nTranslated with www\.DeepL\.com/Translator \(free version\)', '', content, 0, re.M)
 			finaltext += content
 
@@ -230,24 +230,27 @@ for srt in listsrt:
 			print(f'chunk {counter} is done')
 			counter += 1
 			content = ""
-			clipboard.copy('')
+			pyperclip.copy('')
 	#finaltext = finaltext.replace("\n\n", "\n")
-	completeName = os.path.splitext(srt)[0] + '.target.txt'
+	completeName = os.path.splitext(srt)[0] + '.en.txt'
 	finaltext = finaltext.replace("\nTranslated with www.DeepL.com/Translator (free version)", "")
-	with open(completeName, 'w', encoding='utf-8-sig') as g:
+	with open(completeName, 'w', encoding='utf-8') as g:
 	    g.write(finaltext)
 
-	with open(completeName, 'r', encoding='utf-8-sig') as g:
+	with open(completeName, 'r', encoding='utf-8') as g:
 	    finaltext2 = g.read()
 	    finaltext3 = finaltext2.replace("\n\n", "\n")
 	    finaltext3 = finaltext3.replace("\n\n\n", "\n")
 
-	with open(completeName, 'w', encoding='utf-8-sig') as g:
+	with open(completeName, 'w', encoding='utf-8') as g:
 	    g.write(finaltext3)
 
 	finalsrt = os.path.splitext(srt)[0] + '.dl.en.srt'
-	combine_srt(srt, completeName, finalsrt)
-
+	try:
+		combine_srt(srt, completeName, finalsrt)
+	except IndexError:
+		print("ERROR FAILED")
+		continue
 	# delete text files
 	#os.remove(completeName)
 	#os.remove(txtpath)
