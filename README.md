@@ -1,5 +1,5 @@
 # deepl-srt
-Use Selenium to automate translation of a Chinese srt to English on Deepl website
+Use Selenium to automate translation of a Chinese srt to English on Deepl website. Enter the path of your srt folder and every srt will be translated.
 
 ## Installation
 
