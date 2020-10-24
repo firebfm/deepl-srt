@@ -39,9 +39,9 @@ def combine_srt(mysrt, wordtxt, finalsrt):
 	with open(wordtxt, "r", encoding="utf-8", errors='ignore') as wordfile:
 		lines = wordfile.readlines()
 		for line in lines:
-			if line != '\n' and line != lines[-1]:
+			if line != '\n' and line is not lines[-1]:
 				liner += line
-			elif line == lines[-1]:
+			elif line is lines[-1]:
 				liner += line
 				linerList.append(liner)
 			else:
@@ -127,7 +127,7 @@ for srt in listsrt:
 		#content = re.sub(r'\nTranslated with www\.DeepL\.com/Translator \(free version\)', '', content, 0, re.M)
 		finaltext += content
 		pyperclip.copy('')
-		driver.refresh()
+		input_area.clear()
 	else:
 		# list of lines
 		with open(txtpath, 'r', encoding='utf-8') as f:
@@ -206,7 +206,7 @@ for srt in listsrt:
 			#content = re.sub(r'\nTranslated with www\.DeepL\.com/Translator \(free version\)', '', content, 0, re.M)
 			finaltext += content
 
-			driver.refresh()
+			input_area.clear()
 
 			#content = content.replace("\n\n", "\n")
 			# testing, debugging, checking chunk files for errors
