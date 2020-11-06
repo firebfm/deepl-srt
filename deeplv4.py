@@ -18,7 +18,7 @@ def remove_timeline(txtpath):
 	with open(txtpath, 'r', encoding='utf-8') as f:
 		contents = f.read()
 		# remove num + timeline
-		sub1 = re.sub(r'\d+\n.*', '', contents, 0, re.M)
+		sub1 = re.sub(r'\d+\n\d\d:\d\d:\d\d,\d\d\d --> \d\d:\d\d:\d\d,\d\d\d', '', contents, 0, re.M)
 		sub1 = re.sub(r'\n', '', sub1, 1, re.M)
 		sub1 = re.sub(r'\n\n', '\n', sub1, 0, re.M)
 
@@ -67,9 +67,17 @@ def paste_it(chunk):
 	input_area.send_keys(Keys.CONTROL+ "v")
 	# For MacOS
 	#input_area.send_keys(Keys.SHIFT, Keys.INSERT
-
-	# wait for translation
-	time.sleep(14)
+	numC = len(chunk)
+	if numC < 500:
+		time.sleep(6)
+	elif numC < 1546:
+		time.sleep(10)
+	elif numC < 2635:
+		time.sleep(10)
+	elif numC < 4000:
+		time.sleep(17)
+	else:
+		time.sleep(18)
 
 	# Getting button location on  the html tree
 	button_css = ' div.lmt__target_toolbar__copy button' 
@@ -92,7 +100,7 @@ def paste_it(chunk):
 	# Making the click => translation is now in our pyperclip
 	button.click()
 
-	time.sleep(2)
+	time.sleep(1)
 
 	# Assign to content = pyperclip contents
 	content = pyperclip.paste()
