@@ -70,6 +70,8 @@ def paste_it(chunk):
 	numC = len(chunk)
 	if numC < 500:
 		time.sleep(6)
+	elif numC < 980:
+		time.sleep(9)
 	elif numC < 1546:
 		time.sleep(10)
 	elif numC < 2635:
@@ -111,22 +113,30 @@ def paste_it(chunk):
 # Start a Selenium driver
 driver_path=r'C:\Program Files (x86)\chromedriver.exe'
 driver = webdriver.Chrome(driver_path)
+# driver_path_2='C:\\Program Files (x86)\\geckodriver.exe'
+# driver_2 = webdriver.Firefox(driver_path)
 
 # Reach the deepL website
+
 deepl_url = 'https://www.deepl.com/translator#ZH/EN/%0A'
-#deepl_url = 'https://www.deepl.com/translator#EN/ZH/%0A'
 driver.get(deepl_url)
 
 print("enter path of srt folder")
 srtpath = input()
 listsrt = [os.path.join(srtpath, f) for f in os.listdir(srtpath) if f.endswith('.srt')]
+skipArr = []
 
 for srt in listsrt:
 	txtpath = remove_timeline(srt)
 
 	# count length of chracters
 	with open(txtpath, 'r', encoding='utf-8') as f:
-		all_text = f.read()	
+		all_text = f.read()
+		match = re.search(r'\n\n\n', all_text)
+		if match:
+			print('Blank lines detected. Skipping...')
+			skipArr.append(srt)
+			continue
 
 	sentence = ""
 	list_sentence = []
@@ -203,6 +213,7 @@ for srt in listsrt:
 	#finaltext = finaltext.replace("\n\n", "\n")
 	completeName = os.path.splitext(srt)[0] + '.en.txt'
 	finaltext = finaltext.replace("\nTranslated with www.DeepL.com/Translator (free version)", "")
+	finaltext = finaltext.replace("(coll.) (colloquial)", "really")
 	with open(completeName, 'w', encoding='utf-8') as g:
 	    g.write(finaltext)
 
@@ -221,8 +232,10 @@ for srt in listsrt:
 		print("ERROR FAILED")
 		continue
 	# delete text files
-	#os.remove(completeName)
-	#os.remove(txtpath)
+	os.remove(completeName)
+	os.remove(txtpath)
 
 	print(f'{os.path.basename(finalsrt)} IS COMPLETED')
-driver.quit()
+print(f'Number of srt that got skipped: {len(skipArr)}')
+print(skipArr)
+#driver.quit()
