@@ -9,7 +9,7 @@ import os
 import re
 import pyperclip
 
-# Coded by firechip/firebfm
+# Coded by
 # Automatic translation from Chinese srt to English srt in Deepl
 # Download chromedriver, put the exe in driver_path which is C:\Program Files (x86)\chromedriver.exe
 # Enter path of srt folder, all srt in the folder will be translated
@@ -82,7 +82,7 @@ def paste_it(chunk):
 		time.sleep(18)
 
 	# Getting button location on  the html tree
-	button_css = ' div.lmt__target_toolbar__copy button' 
+	button_css = 'div.lmt__target_toolbar__copy_container button'
 
 	# Getting the button object
 	button = driver.find_element_by_css_selector(button_css)
